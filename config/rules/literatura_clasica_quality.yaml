@@ -1,0 +1,39 @@
+profile:
+  code: literatura_clasica
+  name: Perfil de calidad para literatura clásica
+
+thresholds:
+  minimum_words: 1000
+  minimum_characters: 5000
+
+  maximum_replacement_characters: 0
+  maximum_null_characters: 0
+  maximum_control_characters: 0
+
+  maximum_symbol_ratio: 0.03
+  maximum_numeric_line_ratio: 0.03
+  maximum_repeated_line_ratio: 0.08
+  maximum_uppercase_line_ratio: 0.08
+
+  warning_hyphenated_line_breaks: 10
+  warning_short_line_ratio: 0.65
+  warning_long_line_length: 400
+
+editorial_scoring:
+  initial_score: 100
+
+  penalties:
+    replacement_characters: 40
+    null_characters: 50
+    control_characters: 40
+    page_markers: 20
+    excessive_symbols: 20
+    repeated_lines: 15
+    numeric_lines: 10
+    uppercase_lines: 10
+    hyphenated_line_breaks: 5
+    excessive_short_lines: 5
+    excessive_long_lines: 5
+
+  accepted_score: 85
+  review_score: 65

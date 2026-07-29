@@ -1,0 +1,114 @@
+{
+  "document_id": "f99bb1e2-c0ed-4aa0-9858-f1757abaa016",
+  "original_filename": "El_burlador_de_Sevilla.pdf",
+  "source_code": "literatura_clasica",
+  "anomaly_report": {
+    "character_count": 93661,
+    "word_count": 16341,
+    "line_count": 6028,
+    "non_empty_line_count": 4860,
+    "replacement_character_count": 0,
+    "null_character_count": 0,
+    "control_character_count": 0,
+    "page_marker_count": 0,
+    "hyphenated_line_break_count": 1,
+    "symbol_ratio": 0.0007153457682493247,
+    "numeric_line_ratio": 0.05452674897119342,
+    "repeated_line_ratio": 0.19465020576131686,
+    "uppercase_line_ratio": 0.10864197530864197,
+    "short_line_ratio": 0.7454732510288066,
+    "long_line_count": 0,
+    "anomalies": [
+      {
+        "code": "numeric_lines",
+        "severity": "WARNING",
+        "message": "Existe una proporción elevada de líneas numéricas.",
+        "count": 265,
+        "ratio": 0.05452674897119342,
+        "examples": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7",
+          "8",
+          "9",
+          "10"
+        ]
+      },
+      {
+        "code": "repeated_lines",
+        "severity": "WARNING",
+        "message": "Se detectó repetición excesiva de líneas.",
+        "count": 946,
+        "ratio": 0.19465020576131686,
+        "examples": [
+          "JUAN: (268 veces)",
+          "CATALINON: (143 veces)",
+          "MOTA: (69 veces)",
+          "OCTAVIO: (48 veces)",
+          "TISBEA: (42 veces)",
+          "GONZALO: (38 veces)",
+          "AMINTA: (37 veces)",
+          "DIEGO: (31 veces)",
+          "PEDRO: (29 veces)",
+          "ISABELA: (25 veces)"
+        ]
+      },
+      {
+        "code": "uppercase_lines",
+        "severity": "WARNING",
+        "message": "Existe una proporción elevada de líneas en mayúsculas.",
+        "count": 528,
+        "ratio": 0.10864197530864197,
+        "examples": [
+          "ISABELA:",
+          "ISABELA:",
+          "ISABELA:",
+          "ISABELA:",
+          "ISABELA:",
+          "ISABELA:",
+          "ISABELA:",
+          "ISABELA:",
+          "ISABELA:",
+          "ISABELA:"
+        ]
+      },
+      {
+        "code": "excessive_short_lines",
+        "severity": "INFO",
+        "message": "El documento contiene muchas líneas cortas. Puede corresponder a teatro o verso.",
+        "count": 3623,
+        "ratio": 0.7454732510288066,
+        "examples": [
+          "1",
+          "El burlador de Sevilla",
+          "Tirso de Molina",
+          "2",
+          "3",
+          "Elenco",
+          "Don Diego",
+          "Tenorio,",
+          "viejo",
+          "Don Juan"
+        ]
+      }
+    ]
+  },
+  "editorial_validation": {
+    "status": "REJECTED",
+    "score": 60,
+    "approved": false,
+    "errors": [],
+    "warnings": [
+      "numeric_lines: Existe una proporción elevada de líneas numéricas.",
+      "repeated_lines: Se detectó repetición excesiva de líneas.",
+      "uppercase_lines: Existe una proporción elevada de líneas en mayúsculas."
+    ],
+    "observations": [
+      "excessive_short_lines: El documento contiene muchas líneas cortas. Puede corresponder a teatro o verso."
+    ]
+  }
+}

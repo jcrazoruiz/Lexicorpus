@@ -1,0 +1,13 @@
+{
+  "source_code": "literatura_clasica",
+  "document_count": 3,
+  "total_words": 578118,
+  "total_characters": 3193926,
+  "total_paragraphs": 5864,
+  "average_editorial_score": 90.0,
+  "document_types": {
+    "novela": 1,
+    "obra_dialogada": 1,
+    "novela_picaresca": 1
+  }
+}

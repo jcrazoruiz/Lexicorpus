@@ -1,0 +1,28 @@
+source:
+  code: literatura_clasica
+  name: Literatura clásica en español
+  category: literatura_clasica
+  acquisition_method: local_directory
+  input_directory: data/raw/literatura_clasica
+  enabled: true
+
+  default_metadata:
+    language: es
+    thematic_domain: literatura
+    document_type: obra_literaria
+    corpus_version: "1.0"
+
+  supported_extensions:
+    - .pdf
+    - .txt
+
+  extraction:
+    pdf:
+      enabled: true
+    txt:
+      enabled: true
+      encodings:
+        - utf-8
+        - utf-8-sig
+        - cp1252
+        - latin-1
