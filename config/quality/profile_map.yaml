@@ -1,0 +1,35 @@
+default_profile: default
+
+document_type_profiles:
+  novela: novela
+  novela_picaresca: novela
+  cuento: novela
+  relato: novela
+
+  obra_dialogada: obra_dialogada
+  teatro: obra_dialogada
+  obra_teatral: obra_dialogada
+  drama: obra_dialogada
+  obra_dramatica: obra_dialogada
+
+  poesia: poesia
+  poemario: poesia
+  verso: poesia
+
+  articulo_cientifico: articulo_cientifico
+  articulo_academico: articulo_cientifico
+  paper: articulo_cientifico
+
+  tesis: tesis
+  tesina: tesis
+  trabajo_recepcion: tesis
+
+  noticia: prensa
+  articulo_periodistico: prensa
+  editorial_periodistico: prensa
+  prensa: prensa
+
+  ensayo: libro_no_ficcion
+  libro_no_ficcion: libro_no_ficcion
+  divulgacion: libro_no_ficcion
+  manual: libro_no_ficcion

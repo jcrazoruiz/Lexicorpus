@@ -1,0 +1,72 @@
+{
+  "lexicorpus_version": "1.1",
+  "document_id": "6a29b93d-c51c-488b-806b-12eec7c17b64",
+  "original_filename": "El_Lazarillo_de_Tormes.pdf",
+  "source_code": "literatura_clasica",
+  "document_type": "novela_picaresca",
+  "quality_profile": {
+    "code": "novela",
+    "version": "1.1"
+  },
+  "anomaly_report": {
+    "character_count": 109779,
+    "word_count": 20635,
+    "line_count": 2324,
+    "non_empty_line_count": 2223,
+    "replacement_character_count": 0,
+    "null_character_count": 0,
+    "control_character_count": 0,
+    "page_marker_count": 0,
+    "hyphenated_line_break_count": 1,
+    "symbol_ratio": 0.00028238551999927125,
+    "numeric_line_ratio": 0.04633378317588844,
+    "repeated_line_ratio": 0.001349527665317139,
+    "uppercase_line_ratio": 0.005398110661268556,
+    "short_line_ratio": 0.1452991452991453,
+    "long_line_count": 2,
+    "anomalies": [
+      {
+        "code": "numeric_lines",
+        "severity": "WARNING",
+        "message": "Existe una proporción elevada de líneas numéricas.",
+        "count": 103,
+        "ratio": 0.04633378317588844,
+        "examples": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "911",
+          "29",
+          "45",
+          "69",
+          "71",
+          "83"
+        ]
+      },
+      {
+        "code": "excessive_long_lines",
+        "severity": "INFO",
+        "message": "Se encontraron líneas excesivamente largas.",
+        "count": 2,
+        "ratio": null,
+        "examples": [
+          "E L L AZARILLO se publicó en 1554, en Burgos, y en el mismo año en Alcaláy en Amberes. Parece cierto que hubo una edición anterior, que sedesconoce. La edición de Alcalá añade sobre la de Burgos algun",
+          "P RÓLOGO.T RATADO PRIMERO.—Cuenta Lázaro su vida y cúyo hijo fué.T RATADO SEGUNDO.—Cómo Lázaro se asentó con un clérigo y de lascosas que con él pasó.T RATADO TERCERO.—De cómo Lázaro se asentó con un "
+        ]
+      }
+    ]
+  },
+  "editorial_validation": {
+    "status": "APPROVED_WITH_WARNINGS",
+    "score": 85,
+    "approved": true,
+    "errors": [],
+    "warnings": [
+      "numeric_lines: Existe una proporción elevada de líneas numéricas."
+    ],
+    "observations": [
+      "excessive_long_lines: Se encontraron líneas excesivamente largas."
+    ]
+  }
+}

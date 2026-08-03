@@ -47,6 +47,9 @@ class SourceConsolidator:
             / "metadata"
         )
 
+        if documents_directory.exists():
+            shutil.rmtree(documents_directory)
+
         documents_directory.mkdir(
             parents=True,
             exist_ok=True,
@@ -107,6 +110,9 @@ class SourceConsolidator:
                     "document_type": (
                         row["document_type"]
                     ),
+                    "lexicorpus_version": row["lexicorpus_version"],
+                    "quality_profile": row["audit_profile"],
+                    "quality_profile_version": row["profile_version"],
                     "corpus_version": (
                         self.corpus_version
                     ),
@@ -162,6 +168,24 @@ class SourceConsolidator:
             statistics,
         )
 
+        profiles_used = sorted(
+            {
+                (
+                    document["quality_profile"],
+                    document["quality_profile_version"],
+                )
+                for document in consolidated_documents
+            }
+        )
+
+        profiles_used = [
+            {
+                "code": code,
+                "version": version,
+            }
+            for code, version in profiles_used
+        ]
+
         source_manifest = {
             "corpus_name": "LexiCorpus",
             "corpus_version": self.corpus_version,
@@ -172,6 +196,7 @@ class SourceConsolidator:
             "document_count": len(
                 consolidated_documents
             ),
+            "profiles_used": profiles_used,
             "metadata_file": str(
                 metadata_path.relative_to(
                     self.version_directory
