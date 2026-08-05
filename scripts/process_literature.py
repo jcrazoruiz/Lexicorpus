@@ -21,6 +21,9 @@ from lexicorpus.storage.document_repository import (
 )
 from lexicorpus.storage.file_repository import FileRepository
 from lexicorpus.validation.validator import DocumentValidator
+from lexicorpus.cleaning.canonical_cleaner import (
+    CanonicalCleaner,
+)
 
 
 def main() -> int:
@@ -57,6 +60,7 @@ def main() -> int:
             extractor_factory=ExtractorFactory(),
             cleaner=DocumentCleaner(),
             normalizer=TextNormalizer(),
+            canonical_cleaner=CanonicalCleaner(),
             classifier=LiteraryMetadataClassifier(),
             validator=DocumentValidator(),
             file_repository=FileRepository(PROJECT_ROOT),

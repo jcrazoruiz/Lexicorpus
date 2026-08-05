@@ -1,0 +1,17 @@
+profile:
+  code: poesia
+  name: Perfil para poesía y verso
+  version: "1.1"
+
+thresholds:
+  maximum_repeated_line_ratio: 0.20
+  maximum_uppercase_line_ratio: 0.15
+  warning_short_line_ratio: 0.90
+
+rules:
+  disabled_anomalies:
+    - excessive_short_lines
+
+  penalty_overrides:
+    repeated_lines: 5
+    uppercase_lines: 5

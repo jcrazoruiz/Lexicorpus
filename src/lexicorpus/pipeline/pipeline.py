@@ -16,6 +16,9 @@ from lexicorpus.storage.document_repository import (
 )
 from lexicorpus.storage.file_repository import FileRepository
 from lexicorpus.validation.validator import DocumentValidator
+from lexicorpus.cleaning.canonical_cleaner import (
+    CanonicalCleaner,
+)
 
 
 class DocumentPipeline:
@@ -29,6 +32,7 @@ class DocumentPipeline:
         validator: DocumentValidator,
         file_repository: FileRepository,
         document_repository: DocumentRepository,
+        canonical_cleaner: CanonicalCleaner,
     ) -> None:
         self.connector = connector
         self.extractor_factory = extractor_factory
@@ -117,16 +121,20 @@ class DocumentPipeline:
         )
         document.change_status(DocumentStatus.NORMALIZED)
 
+        canonical_text = self.canonical_cleaner.clean(
+            normalized_text
+        )
+
         self.classifier.classify(document)
         document.change_status(DocumentStatus.CLASSIFIED)
 
-        metrics = calculate_metrics(normalized_text)
+        metrics = calculate_metrics(canonical_text)
         document.character_count = metrics.character_count
         document.word_count = metrics.word_count
         document.paragraph_count = metrics.paragraph_count
 
         validation = self.validator.validate(
-            normalized_text,
+            canonical_text,
             document.word_count,
         )
 
@@ -143,11 +151,11 @@ class DocumentPipeline:
                 stage_directory="canonical",
                 source_code=document.source_code,
                 document_id=document.document_id,
-                text=normalized_text,
+                text=canonical_text,
             )
         )
         document.canonical_sha256 = HashService.sha256_text(
-            normalized_text
+            canonical_text
         )
         document.change_status(DocumentStatus.CANONICAL)
 

@@ -1,0 +1,19 @@
+profile:
+  code: articulo_cientifico
+  name: Perfil para artículos científicos
+  version: "1.1"
+
+thresholds:
+  minimum_words: 500
+  maximum_numeric_line_ratio: 0.12
+  maximum_repeated_line_ratio: 0.08
+  maximum_uppercase_line_ratio: 0.10
+  warning_long_line_length: 600
+
+rules:
+  severity_overrides:
+    numeric_lines: INFO
+
+  penalty_overrides:
+    numeric_lines: 0
+    excessive_long_lines: 2

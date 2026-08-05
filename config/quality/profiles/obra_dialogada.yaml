@@ -1,0 +1,23 @@
+profile:
+  code: obra_dialogada
+  name: Perfil para obras teatrales y dialogadas
+  version: "1.1"
+
+thresholds:
+  maximum_numeric_line_ratio: 0.06
+  maximum_repeated_line_ratio: 0.35
+  maximum_uppercase_line_ratio: 0.30
+  warning_short_line_ratio: 0.85
+
+rules:
+  disabled_anomalies:
+    - repeated_lines
+    - uppercase_lines
+
+  severity_overrides:
+    numeric_lines: WARNING
+    excessive_short_lines: INFO
+
+  penalty_overrides:
+    numeric_lines: 5
+    excessive_short_lines: 0

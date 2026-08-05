@@ -77,8 +77,24 @@ class AnomalyDetector:
     def __init__(
         self,
         thresholds: dict[str, Any],
+        rules: dict[str, Any] | None = None,
     ) -> None:
         self.thresholds = thresholds
+        self.rules = rules or {}
+
+        self.disabled_anomalies = set(
+            self.rules.get(
+                "disabled_anomalies",
+                [],
+            )
+        )
+
+        self.severity_overrides = (
+            self.rules.get(
+                "severity_overrides",
+                {},
+            )
+        )
 
     def analyze(self, text: str) -> AnomalyReport:
         lines = text.splitlines()
@@ -202,6 +218,8 @@ class AnomalyDetector:
             short_lines=short_lines,
             long_lines=long_lines,
         )
+
+        self._apply_profile_rules(report)
 
         return report
 
@@ -455,6 +473,31 @@ class AnomalyDetector:
                     ],
                 )
             )
+
+    def _apply_profile_rules(
+        self,
+        report: AnomalyReport,
+    )  -> None:
+        filtered_anomalies: list[Anomaly] = []
+
+        for anomaly in report.anomalies:
+            if anomaly.code in self.disabled_anomalies:
+                continue
+
+            overridden_severity = (
+                self.severity_overrides.get(
+                    anomaly.code
+                )
+            )
+
+            if overridden_severity:
+                anomaly.severity = str(
+                    overridden_severity
+                ).upper()
+
+            filtered_anomalies.append(anomaly)
+
+        report.anomalies = filtered_anomalies
 
     @staticmethod
     def _safe_ratio(

@@ -1,0 +1,37 @@
+{
+  "lexicorpus_version": "1.1",
+  "document_id": "4ea915a6-cc60-4476-af08-b7b98e813a43",
+  "original_filename": "El_Ingenioso_hidalgo_don_Quijote_de_la_Mancha.txt",
+  "source_code": "literatura_clasica",
+  "document_type": "novela",
+  "quality_profile": {
+    "code": "novela",
+    "version": "1.1"
+  },
+  "anomaly_report": {
+    "character_count": 2694200,
+    "word_count": 488720,
+    "line_count": 52225,
+    "non_empty_line_count": 46203,
+    "replacement_character_count": 0,
+    "null_character_count": 0,
+    "control_character_count": 0,
+    "page_marker_count": 0,
+    "hyphenated_line_break_count": 1,
+    "symbol_ratio": 1.6331378516813897e-05,
+    "numeric_line_ratio": 0.0,
+    "repeated_line_ratio": 0.025063307577430038,
+    "uppercase_line_ratio": 0.01363547821570028,
+    "short_line_ratio": 0.13735038850291106,
+    "long_line_count": 0,
+    "anomalies": []
+  },
+  "editorial_validation": {
+    "status": "APPROVED",
+    "score": 100,
+    "approved": true,
+    "errors": [],
+    "warnings": [],
+    "observations": []
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "source_code": "literatura_clasica",
+  "document_count": 4,
+  "total_words": 594427,
+  "total_characters": 3283206,
+  "total_paragraphs": 7677,
+  "average_editorial_score": 98.75,
+  "document_types": {
+    "obra_dramatica": 1,
+    "novela": 1,
+    "obra_dialogada": 1,
+    "novela_picaresca": 1
+  }
+}

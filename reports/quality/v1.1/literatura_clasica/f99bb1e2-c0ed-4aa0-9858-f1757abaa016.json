@@ -1,0 +1,37 @@
+{
+  "lexicorpus_version": "1.1",
+  "document_id": "f99bb1e2-c0ed-4aa0-9858-f1757abaa016",
+  "original_filename": "El_burlador_de_Sevilla.pdf",
+  "source_code": "literatura_clasica",
+  "document_type": "obra_dramatica",
+  "quality_profile": {
+    "code": "obra_dialogada",
+    "version": "1.1"
+  },
+  "anomaly_report": {
+    "character_count": 92687,
+    "word_count": 16340,
+    "line_count": 5742,
+    "non_empty_line_count": 4594,
+    "replacement_character_count": 0,
+    "null_character_count": 0,
+    "control_character_count": 0,
+    "page_marker_count": 0,
+    "hyphenated_line_break_count": 0,
+    "symbol_ratio": 0.0007228629689168924,
+    "numeric_line_ratio": 0.0,
+    "repeated_line_ratio": 0.20592076621680452,
+    "uppercase_line_ratio": 0.11493252067914671,
+    "short_line_ratio": 0.7307357422725294,
+    "long_line_count": 0,
+    "anomalies": []
+  },
+  "editorial_validation": {
+    "status": "APPROVED",
+    "score": 100,
+    "approved": true,
+    "errors": [],
+    "warnings": [],
+    "observations": []
+  }
+}
