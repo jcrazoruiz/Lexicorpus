@@ -1,0 +1,32 @@
+﻿.venv/
+__pycache__/
+*.pyc
+.vscode/
+logs/
+data/raw/
+data/extracted/
+data/cleaned/
+data/normalized/
+data/canonical/
+
+# Base de datos operativa
+metadata/database/*.db
+metadata/database/*.sqlite
+metadata/database/*.sqlite3
+
+# Estado operativo de adquisiciÃ³n
+metadata/acquisition/
+
+# Reportes operativos
+reports/acquisition/
+reports/processing/
+
+# Resultados lÃ©xicos voluminosos
+reports/lexical/*
+
+scripts/acquire_scielo_legacy.py
+scripts/process_scielo.py
+scripts/test_scielo_pdf.py
+
+# Artefactos temporales de migración SciELO
+*acquire_scielo_legacy.py*

@@ -36,7 +36,7 @@ CORPUS_VERSION = "v1.0"
 def load_quality_configuration() -> dict:
     configuration_path = (
         PROJECT_ROOT
-        / "config"
+        / "settings"
         / "rules"
         / "literatura_clasica_quality.yaml"
     )

@@ -1,8 +1,8 @@
 from pathlib import Path
 
 from lexicorpus.acquisition.base_connector import BaseConnector
-from lexicorpus.classification.literary_metadata import (
-    LiteraryMetadataClassifier,
+from lexicorpus.classification.base_classifier import (
+    BaseClassifier,
 )
 from lexicorpus.cleaning.cleaner import DocumentCleaner
 from lexicorpus.domain.document import Document
@@ -28,11 +28,12 @@ class DocumentPipeline:
         extractor_factory: ExtractorFactory,
         cleaner: DocumentCleaner,
         normalizer: TextNormalizer,
-        classifier: LiteraryMetadataClassifier,
+        classifier: BaseClassifier,
         validator: DocumentValidator,
         file_repository: FileRepository,
         document_repository: DocumentRepository,
         canonical_cleaner: CanonicalCleaner,
+        maximum_documents_to_process: int | None = None,
     ) -> None:
         self.connector = connector
         self.extractor_factory = extractor_factory
@@ -42,35 +43,62 @@ class DocumentPipeline:
         self.validator = validator
         self.file_repository = file_repository
         self.document_repository = document_repository
+        self.canonical_cleaner = canonical_cleaner
+        self.maximum_documents_to_process = (
+            maximum_documents_to_process
+        )
 
     def run(self) -> list[Document]:
         results: list[Document] = []
+        new_documents_count = 0
 
         for document in self.connector.discover():
+
+            # Calcular la huella antes de decidir
+            # si el documento debe procesarse.
+            document.original_sha256 = (
+                HashService.sha256_file(
+                    document.original_path
+                )
+            )
+
+            # Si ya está registrado, se ignora y
+            # continuamos buscando otro documento nuevo.
+            if self.document_repository.exists_by_original_hash(
+                document.original_sha256
+            ):
+                continue
+
+            # El límite se aplica solamente
+            # sobre documentos nuevos.
+            if (
+                self.maximum_documents_to_process
+                and new_documents_count
+                >= self.maximum_documents_to_process
+            ):
+                break
+
+            new_documents_count += 1
+
             try:
                 self._process(document)
+
             except Exception as exc:
                 document.reject(
                     f"{type(exc).__name__}: {exc}"
                 )
-                self.document_repository.save(document)
+
+                self.document_repository.save(
+                    document
+                )
 
             results.append(document)
 
         return results
 
     def _process(self, document: Document) -> None:
-        document.original_sha256 = HashService.sha256_file(
-            document.original_path
-        )
-
-        if self.document_repository.exists_by_original_hash(
-            document.original_sha256
-        ):
-            document.reject(
-                "El archivo original ya está registrado."
-            )
-            return
+        # La huella original ya fue calculada y validada
+        # en run() antes de iniciar el procesamiento.
 
         document.change_status(DocumentStatus.REGISTERED)
         self.document_repository.save(document)
