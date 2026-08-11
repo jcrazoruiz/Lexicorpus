@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Entornos virtuales
+.venv/
+venv/
+env/
+
+# VS Code
+.vscode/
+
+# Datos generados por LexiCorpus
+data/raw/
+data/extracted/
+data/cleaned/
+data/normalized/
+data/canonical/
+
+# Metadatos operativos generados
+metadata/acquisition/
+
+# Base de datos local
+metadata/database/*.db
+metadata/database/*.sqlite
+metadata/database/*.sqlite3
+
+# Reportes generados
+reports/acquisition/
+reports/processing/
+
+# Temporales y logs
+*.log
+*.tmp
+*.bak
+.DS_Store
+Thumbs.db

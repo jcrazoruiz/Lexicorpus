@@ -2,6 +2,9 @@ from pathlib import Path
 
 from lexicorpus.domain.document import Document
 
+from lexicorpus.classification.base_classifier import (
+    BaseClassifier,
+)
 
 KNOWN_WORKS: dict[str, dict[str, str]] = {
     "quijote": {
@@ -35,7 +38,7 @@ KNOWN_WORKS: dict[str, dict[str, str]] = {
 }
 
 
-class LiteraryMetadataClassifier:
+class LiteraryMetadataClassifier(BaseClassifier):
     def classify(self, document: Document) -> None:
         normalized_name = self._normalize_filename(
             document.original_path

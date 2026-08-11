@@ -118,7 +118,7 @@ def write_document_report(
 def main() -> int:
     profile_loader = QualityProfileLoader(
         PROJECT_ROOT
-        / "config"
+        / "settings"
         / "quality"
     )
 
