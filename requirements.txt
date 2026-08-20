@@ -1,3 +1,4 @@
 pypdf
 PyYAML
 requests
+beautifulsoup4
