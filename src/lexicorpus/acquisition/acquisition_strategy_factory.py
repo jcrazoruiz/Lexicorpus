@@ -20,6 +20,12 @@ from lexicorpus.acquisition.oai_checkpoint_repository import (
 from lexicorpus.acquisition.oai_pmh_client import (
     OaiPmhClient,
 )
+from lexicorpus.acquisition.redalyc_acquisition_strategy import (
+    RedalycAcquisitionStrategy,
+)
+from lexicorpus.acquisition.redalyc_harvester import (
+    RedalycHarvester,
+)
 from lexicorpus.acquisition.scielo_acquisition_strategy import (
     ScieloAcquisitionStrategy,
 )
@@ -58,6 +64,16 @@ class AcquisitionStrategyFactory:
                 )
             )
 
+        if acquisition_strategy == "redalyc_web":
+            return (
+                AcquisitionStrategyFactory
+                ._create_redalyc_strategy(
+                    source_code=source_code,
+                    configuration=configuration,
+                    project_root=project_root,
+                )
+            )
+
         raise ValueError(
             "Estrategia de adquisición no soportada: "
             f"{acquisition_strategy}"
@@ -81,17 +97,23 @@ class AcquisitionStrategyFactory:
         filters = configuration["filters"]
 
         request_delay = float(
-            limits["delay_between_requests_seconds"]
+            limits[
+                "delay_between_requests_seconds"
+            ]
         )
 
         client = OaiPmhClient(
-            base_url=configuration["oai_base_url"],
+            base_url=(
+                configuration["oai_base_url"]
+            ),
             metadata_prefix=configuration.get(
                 "metadata_prefix",
                 "oai_dc",
             ),
             timeout_seconds=int(
-                limits["request_timeout_seconds"]
+                limits[
+                    "request_timeout_seconds"
+                ]
             ),
             delay_seconds=request_delay,
         )
@@ -100,7 +122,9 @@ class AcquisitionStrategyFactory:
             AcquisitionRepository(
                 metadata_directory=(
                     project_root
-                    / storage["metadata_directory"]
+                    / storage[
+                        "metadata_directory"
+                    ]
                 ),
                 source_code=source_code,
             )
@@ -110,7 +134,9 @@ class AcquisitionStrategyFactory:
             OaiCheckpointRepository(
                 checkpoint_path=(
                     project_root
-                    / storage["metadata_directory"]
+                    / storage[
+                        "metadata_directory"
+                    ]
                     / "checkpoint.json"
                 )
             )
@@ -136,7 +162,9 @@ class AcquisitionStrategyFactory:
             ),
             metadata_filter=MetadataFilter(
                 accepted_languages=set(
-                    filters["accepted_languages"]
+                    filters[
+                        "accepted_languages"
+                    ]
                 ),
                 accepted_resource_types=set(
                     filters[
@@ -180,5 +208,35 @@ class AcquisitionStrategyFactory:
         )
 
         return ScieloAcquisitionStrategy(
+            harvester=harvester
+        )
+
+    @staticmethod
+    def _create_redalyc_strategy(
+        source_code: str,
+        configuration: dict,
+        project_root: Path,
+    ) -> AcquisitionStrategy:
+
+        if source_code != "redalyc":
+            raise ValueError(
+                "La estrategia redalyc_web "
+                "solo está disponible para RedALyC."
+            )
+
+        limits = configuration[
+            "limits"
+        ]
+
+        harvester = RedalycHarvester(
+            project_root=project_root,
+            maximum_documents_to_download=int(
+                limits[
+                    "maximum_documents_to_download"
+                ]
+            ),
+        )
+
+        return RedalycAcquisitionStrategy(
             harvester=harvester
         )

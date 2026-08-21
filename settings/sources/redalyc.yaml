@@ -1,0 +1,29 @@
+source:
+  code: redalyc
+  name: RedALyC
+  enabled: true
+
+  acquisition_method: web_catalog
+  acquisition_strategy: redalyc_web
+
+  filters:
+    accepted_languages:
+      - es
+      - español
+      - spanish
+
+    accepted_resource_types:
+      - article
+
+    require_pdf: true
+
+  storage:
+    raw_directory: data/raw/redalyc
+    metadata_directory: metadata/acquisition/redalyc
+
+  limits:
+    request_timeout_seconds: 30
+    delay_between_requests_seconds: 0.0
+
+    maximum_records_to_inspect: null
+    maximum_documents_to_download: 5000
