@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import csv
 import sys
-from collections import Counter
 from pathlib import Path
 
 
@@ -18,9 +17,30 @@ from lexicorpus.analysis.lexical_frequency import (
 )
 
 
+# ---------------------------------------------------------------------
+# Configuración del análisis léxico LexiCorpus v1.4
+# ---------------------------------------------------------------------
+
+SOURCE_CODES = (
+    "literatura_clasica",
+    "scielo",
+    "redalyc",
+    "wikipedia_es",
+)
+
+MAX_LEXICAL_TOKENS = 65_000
+
+FIRST_TOKEN = 537
+LAST_TOKEN = 65_536
+
+
 def collect_documents(
     source_code: str,
 ) -> list[Path]:
+    """
+    Recupera todos los documentos canónicos de una fuente.
+    """
+
     source_directory = (
         PROJECT_ROOT
         / "data"
@@ -41,19 +61,116 @@ def collect_documents(
     )
 
 
-def write_frequency_csv(
-    output_path: Path,
+def prepare_top_results(
     results,
+):
+    """
+    Selecciona como máximo los 65,000 términos más frecuentes.
+
+    El orden recibido desde LexicalFrequencyAnalyzer es:
+        1. frecuencia absoluta descendente
+        2. palabra ascendente para desempates
+
+    Los tokens LexiMapSp-16 disponibles para este vocabulario
+    corresponden al intervalo 537..65536.
+    """
+
+    selected = results[:MAX_LEXICAL_TOKENS]
+
+    alphabetical_words = sorted(
+        item.word
+        for item in selected
+    )
+
+    alphabetical_rank = {
+        word: ranking
+        for ranking, word in enumerate(
+            alphabetical_words,
+            start=1,
+        )
+    }
+
+    return selected, alphabetical_rank
+
+
+def build_rows(
+    results,
+    total_tokens: int,
+):
+    """
+    Construye las filas manteniendo el token asignado por
+    frecuencia independientemente del orden de salida.
+    """
+
+    selected, alphabetical_rank = (
+        prepare_top_results(results)
+    )
+
+    rows = []
+
+    for frequency_rank, item in enumerate(
+        selected,
+        start=1,
+    ):
+        token = FIRST_TOKEN + frequency_rank - 1
+
+        if token > LAST_TOKEN:
+            raise ValueError(
+                f"Token fuera del rango LexiMapSp-16: "
+                f"{token}"
+            )
+
+        relative_frequency = (
+            item.absolute_frequency / total_tokens
+            if total_tokens
+            else 0
+        )
+
+        rows.append(
+            {
+                "Token": token,
+                "RankingFrecuencia": frequency_rank,
+                "RankingAlfabetico": (
+                    alphabetical_rank[item.word]
+                ),
+                "Palabra": item.word,
+                "FrecuenciaAbsoluta": (
+                    item.absolute_frequency
+                ),
+                "FrecuenciaRelativa": (
+                    relative_frequency
+                ),
+                "FrecuenciaDocumental": (
+                    item.document_frequency
+                ),
+            }
+        )
+
+    return rows
+
+
+def write_csv(
+    output_path: Path,
+    rows,
 ) -> None:
+    """
+    Escribe un reporte CSV.
+    """
+
     output_path.parent.mkdir(
         parents=True,
         exist_ok=True,
     )
 
-    total_tokens = sum(
-        item.absolute_frequency
-        for item in results
-    )
+    fieldnames = [
+        "Token",
+        "RankingFrecuencia",
+        "RankingAlfabetico",
+        "Palabra",
+        "FrecuenciaAbsoluta",
+        "FrecuenciaRelativa",
+        "FrecuenciaDocumental",
+    ]
 
     with output_path.open(
         "w",
@@ -61,38 +178,85 @@ def write_frequency_csv(
         newline="",
     ) as output_file:
 
-        writer = csv.writer(output_file)
-
-        writer.writerow(
-            [
-                "Ranking",
-                "Palabra",
-                "FrecuenciaAbsoluta",
-                "FrecuenciaRelativa",
-                "FrecuenciaDocumental",
-            ]
+        writer = csv.DictWriter(
+            output_file,
+            fieldnames=fieldnames,
         )
 
-        for ranking, item in enumerate(
-            results,
-            start=1,
-        ):
-            relative_frequency = (
-                item.absolute_frequency
-                / total_tokens
-                if total_tokens
-                else 0
+        writer.writeheader()
+
+        for row in rows:
+            output_row = dict(row)
+
+            output_row["FrecuenciaRelativa"] = (
+                f"{row['FrecuenciaRelativa']:.10f}"
             )
 
-            writer.writerow(
-                [
-                    ranking,
-                    item.word,
-                    item.absolute_frequency,
-                    f"{relative_frequency:.10f}",
-                    item.document_frequency,
-                ]
-            )
+            writer.writerow(output_row)
+
+
+def write_reports(
+    output_directory: Path,
+    report_name: str,
+    results,
+) -> tuple[Path, Path]:
+    """
+    Genera dos representaciones del mismo vocabulario:
+
+    1. ordenado por frecuencia
+    2. ordenado alfabéticamente
+
+    El Token no cambia entre ambos archivos.
+    """
+
+    total_tokens = sum(
+        item.absolute_frequency
+        for item in results
+    )
+
+    rows = build_rows(
+        results,
+        total_tokens,
+    )
+
+    frequency_rows = sorted(
+        rows,
+        key=lambda row: (
+            row["RankingFrecuencia"]
+        ),
+    )
+
+    alphabetical_rows = sorted(
+        rows,
+        key=lambda row: (
+            row["RankingAlfabetico"]
+        ),
+    )
+
+    frequency_path = (
+        output_directory
+        / f"{report_name}_top65000_frequency.csv"
+    )
+
+    alphabetical_path = (
+        output_directory
+        / f"{report_name}_top65000_alphabetical.csv"
+    )
+
+    write_csv(
+        frequency_path,
+        frequency_rows,
+    )
+
+    write_csv(
+        alphabetical_path,
+        alphabetical_rows,
+    )
+
+    return (
+        frequency_path,
+        alphabetical_path,
+    )
 
 
 def print_summary(
@@ -100,6 +264,10 @@ def print_summary(
     document_count: int,
     results,
 ) -> None:
+    """
+    Presenta las estadísticas generales del análisis.
+    """
+
     total_tokens = sum(
         item.absolute_frequency
         for item in results
@@ -107,128 +275,246 @@ def print_summary(
 
     vocabulary_size = len(results)
 
+    selected_count = min(
+        vocabulary_size,
+        MAX_LEXICAL_TOKENS,
+    )
+
     hapax_count = sum(
         1
         for item in results
         if item.absolute_frequency == 1
     )
 
-    print("\n" + "=" * 72)
+    selected_frequency = sum(
+        item.absolute_frequency
+        for item in results[:MAX_LEXICAL_TOKENS]
+    )
+
+    coverage = (
+        selected_frequency / total_tokens
+        if total_tokens
+        else 0
+    )
+
+    print("\n" + "=" * 80)
     print(source_name)
-    print("=" * 72)
+    print("=" * 80)
+
     print(
-        f"Documentos analizados : "
+        f"Documentos analizados       : "
         f"{document_count:,}"
     )
+
     print(
-        f"Tokens léxicos        : "
+        f"Tokens léxicos              : "
         f"{total_tokens:,}"
     )
+
     print(
-        f"Palabras distintas    : "
+        f"Palabras distintas          : "
         f"{vocabulary_size:,}"
     )
+
     print(
-        f"Hapax legomena        : "
+        f"Hapax legomena              : "
         f"{hapax_count:,}"
     )
 
+    print(
+        f"Términos seleccionados      : "
+        f"{selected_count:,}"
+    )
+
+    print(
+        f"Cobertura Top 65,000        : "
+        f"{coverage:.4%}"
+    )
+
+    if selected_count:
+        final_token = (
+            FIRST_TOKEN
+            + selected_count
+            - 1
+        )
+
+        print(
+            f"Rango de tokens utilizado   : "
+            f"{FIRST_TOKEN:,} - "
+            f"{final_token:,}"
+        )
+
     print("\nTop 20")
-    print("-" * 72)
+    print("-" * 80)
 
     for ranking, item in enumerate(
         results[:20],
         start=1,
     ):
+        token = FIRST_TOKEN + ranking - 1
+
         print(
             f"{ranking:>4} "
+            f"Token {token:>5} "
             f"{item.word:<25} "
-            f"{item.absolute_frequency:>12,}"
+            f"{item.absolute_frequency:>15,}"
         )
 
 
+def analyze_corpus(
+    analyzer: LexicalFrequencyAnalyzer,
+    name: str,
+    report_name: str,
+    documents: list[Path],
+    output_directory: Path,
+) -> None:
+    """
+    Ejecuta el análisis completo de un corpus.
+    """
+
+    print("\n" + "=" * 80)
+    print(f"Analizando: {name}")
+    print("=" * 80)
+
+    print(
+        f"Documentos encontrados: "
+        f"{len(documents):,}"
+    )
+
+    results = analyzer.analyze(
+        documents
+    )
+
+    frequency_path, alphabetical_path = (
+        write_reports(
+            output_directory,
+            report_name,
+            results,
+        )
+    )
+
+    print_summary(
+        name,
+        len(documents),
+        results,
+    )
+
+    print("\nArchivos generados:")
+
+    print(
+        f"  Frecuencia : "
+        f"{frequency_path}"
+    )
+
+    print(
+        f"  Alfabético : "
+        f"{alphabetical_path}"
+    )
+
+
 def main() -> int:
+
+    print(
+        "LexiCorpus v1.4 - Análisis léxico"
+    )
+
+    print("=" * 80)
+
+    print(
+        f"Vocabulario máximo : "
+        f"{MAX_LEXICAL_TOKENS:,}"
+    )
+
+    print(
+        f"Tokens reservados  : "
+        f"1 - {FIRST_TOKEN - 1}"
+    )
+
+    print(
+        f"Tokens léxicos     : "
+        f"{FIRST_TOKEN} - {LAST_TOKEN}"
+    )
+
     analyzer = LexicalFrequencyAnalyzer()
 
-    literature_documents = collect_documents(
-        "literatura_clasica"
-    )
+    documents_by_source: dict[
+        str,
+        list[Path],
+    ] = {}
 
-    scielo_documents = collect_documents(
-        "scielo"
-    )
+    # -------------------------------------------------------------
+    # Recuperar documentos
+    # -------------------------------------------------------------
 
-    combined_documents = (
-        literature_documents
-        + scielo_documents
-    )
+    for source_code in SOURCE_CODES:
+        documents_by_source[source_code] = (
+            collect_documents(source_code)
+        )
 
-    literature_results = analyzer.analyze(
-        literature_documents
-    )
+    all_documents = []
 
-    scielo_results = analyzer.analyze(
-        scielo_documents
-    )
-
-    combined_results = analyzer.analyze(
-        combined_documents
-    )
+    for source_code in SOURCE_CODES:
+        all_documents.extend(
+            documents_by_source[source_code]
+        )
 
     output_directory = (
         PROJECT_ROOT
         / "reports"
         / "lexical"
+        / "v1_4"
     )
 
-    write_frequency_csv(
-        output_directory
-        / "literatura_clasica_frequency.csv",
-        literature_results,
+    # -------------------------------------------------------------
+    # Análisis global
+    # -------------------------------------------------------------
+
+    analyze_corpus(
+        analyzer=analyzer,
+        name="LexiCorpus global v1.4",
+        report_name="lexicorpus",
+        documents=all_documents,
+        output_directory=output_directory,
     )
 
-    write_frequency_csv(
-        output_directory
-        / "scielo_frequency.csv",
-        scielo_results,
-    )
+    # -------------------------------------------------------------
+    # Análisis por fuente
+    # -------------------------------------------------------------
 
-    write_frequency_csv(
-        output_directory
-        / "lexicorpus_frequency.csv",
-        combined_results,
-    )
+    source_names = {
+        "literatura_clasica": (
+            "Literatura clásica"
+        ),
+        "scielo": (
+            "SciELO México"
+        ),
+        "redalyc": (
+            "RedALyC"
+        ),
+        "wikipedia_es": (
+            "Wikipedia en español"
+        ),
+    }
 
-    print_summary(
-        "Literatura clásica",
-        len(literature_documents),
-        literature_results,
-    )
+    for source_code in SOURCE_CODES:
 
-    print_summary(
-        "SciELO México",
-        len(scielo_documents),
-        scielo_results,
-    )
+        analyze_corpus(
+            analyzer=analyzer,
+            name=source_names[source_code],
+            report_name=source_code,
+            documents=(
+                documents_by_source[source_code]
+            ),
+            output_directory=output_directory,
+        )
 
-    print_summary(
-        "LexiCorpus combinado",
-        len(combined_documents),
-        combined_results,
-    )
+    print("\n" + "=" * 80)
+    print("Análisis finalizado")
+    print("=" * 80)
 
-    print("\nArchivos generados:")
     print(
-        output_directory
-        / "literatura_clasica_frequency.csv"
-    )
-    print(
-        output_directory
-        / "scielo_frequency.csv"
-    )
-    print(
-        output_directory
-        / "lexicorpus_frequency.csv"
+        f"Reportes disponibles en:\n"
+        f"{output_directory}"
     )
 
     return 0

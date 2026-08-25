@@ -2,3 +2,4 @@ pypdf
 PyYAML
 requests
 beautifulsoup4
+mwparserfromhell
