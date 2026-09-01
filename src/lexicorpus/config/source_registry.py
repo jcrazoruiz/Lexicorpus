@@ -20,6 +20,10 @@ from lexicorpus.classification.wikipedia_metadata_classifier import (
     WikipediaMetadataClassifier,
 )
 
+from lexicorpus.classification.wikinews_metadata_classifier import (
+    WikinewsMetadataClassifier,
+)
+
 
 @dataclass(
     frozen=True,
@@ -91,6 +95,23 @@ def build_wikipedia_classifier(
                 / "acquisition"
                 / "wikipedia_es"
                 / "wikipedia_acquisition.jsonl"
+            )
+        )
+    )
+
+
+def build_wikinews_classifier(
+    project_root: Path,
+) -> BaseClassifier:
+
+    return (
+        WikinewsMetadataClassifier(
+            acquisition_metadata_path=(
+                project_root
+                / "metadata"
+                / "acquisition"
+                / "wikinews_es"
+                / "wikinews_acquisition.jsonl"
             )
         )
     )
@@ -171,6 +192,30 @@ SOURCE_REGISTRY: dict[
         },
         classifier_factory=(
             build_wikipedia_classifier
+        ),
+    ),
+
+    "wikinews_es": SourceDefinition(
+        code="wikinews_es",
+        name=(
+            "Wikinoticias en español"
+        ),
+        acquisition_method=(
+            "wikimedia_dump"
+        ),
+        acquisition_strategy=(
+            "local"
+        ),
+        raw_directory=(
+            "data/raw/"
+            "wikinews_es/"
+            "articles"
+        ),
+        supported_extensions={
+            ".txt",
+        },
+        classifier_factory=(
+            build_wikinews_classifier
         ),
     ),
 
