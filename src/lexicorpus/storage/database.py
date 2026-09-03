@@ -44,6 +44,60 @@ ON document(original_sha256);
 CREATE INDEX IF NOT EXISTS
 ix_document_source_status
 ON document(source_code, status);
+
+CREATE TABLE IF NOT EXISTS lexicorpus_result (
+    id_result INTEGER PRIMARY KEY AUTOINCREMENT,
+    source_code TEXT NOT NULL,
+    lexicorpus_size INTEGER NOT NULL,
+    vocabulary_available INTEGER NOT NULL,
+    selected_terms INTEGER NOT NULL,
+    token_start INTEGER NOT NULL,
+    token_end INTEGER NOT NULL,
+    total_occurrences INTEGER NOT NULL,
+    covered_occurrences INTEGER NOT NULL,
+    outside_occurrences INTEGER NOT NULL,
+    coverage_percentage REAL NOT NULL,
+    csv_path TEXT NOT NULL,
+    generated_at TEXT NOT NULL,
+
+    UNIQUE (
+        source_code,
+        lexicorpus_size
+    )
+);
+
+CREATE INDEX IF NOT EXISTS
+ix_lexicorpus_result_source_size
+ON lexicorpus_result(
+    source_code,
+    lexicorpus_size
+);
+
+CREATE TABLE IF NOT EXISTS lexicorpus_cross_coverage (
+    id_result INTEGER PRIMARY KEY AUTOINCREMENT,
+    origin_source TEXT NOT NULL,
+    evaluated_source TEXT NOT NULL,
+    lexicorpus_size INTEGER NOT NULL,
+    total_occurrences INTEGER NOT NULL,
+    covered_occurrences INTEGER NOT NULL,
+    outside_occurrences INTEGER NOT NULL,
+    coverage_percentage REAL NOT NULL,
+    generated_at TEXT NOT NULL,
+
+    UNIQUE (
+        origin_source,
+        evaluated_source,
+        lexicorpus_size
+    )
+);
+
+CREATE INDEX IF NOT EXISTS
+ix_lexicorpus_cross_coverage
+ON lexicorpus_cross_coverage(
+    origin_source,
+    evaluated_source,
+    lexicorpus_size
+);
 """
 
 
