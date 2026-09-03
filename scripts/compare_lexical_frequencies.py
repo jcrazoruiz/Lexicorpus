@@ -370,8 +370,8 @@ def main() -> int:
 
     expected_tokens = list(
         range(
-            537,
-            65_537,
+            536,
+            65_536,
         )
     )
 
@@ -407,7 +407,7 @@ def main() -> int:
     if not tokens_valid:
         raise ValueError(
             "La secuencia de tokens globales "
-            "no es continua entre 537 y 65,536."
+            "no es continua entre 536 y 65,535."
         )
 
     print()

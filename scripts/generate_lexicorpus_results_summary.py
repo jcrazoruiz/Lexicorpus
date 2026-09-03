@@ -34,7 +34,7 @@ OUTPUT_PATH = (
 # CONFIGURACIÓN
 # =============================================================================
 
-TOKEN_START = 537
+TOKEN_START = 536
 
 LEXICORPUS_SIZES = [
     20_000,

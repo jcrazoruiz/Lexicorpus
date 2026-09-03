@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 import csv
 import sys
@@ -18,7 +18,7 @@ from lexicorpus.analysis.lexical_frequency import (
 
 
 # ---------------------------------------------------------------------
-# Configuración del análisis léxico LexiCorpus v1.4
+# ConfiguraciÃ³n del anÃ¡lisis lÃ©xico LexiCorpus v1.4
 # ---------------------------------------------------------------------
 
 SOURCE_CODES = (
@@ -30,15 +30,15 @@ SOURCE_CODES = (
 
 MAX_LEXICAL_TOKENS = 65_000
 
-FIRST_TOKEN = 537
-LAST_TOKEN = 65_536
+FIRST_TOKEN = 536
+LAST_TOKEN = 65_535
 
 
 def collect_documents(
     source_code: str,
 ) -> list[Path]:
     """
-    Recupera todos los documentos canónicos de una fuente.
+    Recupera todos los documentos canÃ³nicos de una fuente.
     """
 
     source_directory = (
@@ -50,7 +50,7 @@ def collect_documents(
 
     if not source_directory.exists():
         raise FileNotFoundError(
-            f"No existe la carpeta canónica: "
+            f"No existe la carpeta canÃ³nica: "
             f"{source_directory}"
         )
 
@@ -65,14 +65,14 @@ def prepare_top_results(
     results,
 ):
     """
-    Selecciona como máximo los 65,000 términos más frecuentes.
+    Selecciona como mÃ¡ximo los 65,000 tÃ©rminos mÃ¡s frecuentes.
 
     El orden recibido desde LexicalFrequencyAnalyzer es:
         1. frecuencia absoluta descendente
         2. palabra ascendente para desempates
 
     Los tokens LexiMapSp-16 disponibles para este vocabulario
-    corresponden al intervalo 537..65536.
+    corresponden al intervalo 536..65535.
     """
 
     selected = results[:MAX_LEXICAL_TOKENS]
@@ -204,7 +204,7 @@ def write_reports(
     Genera dos representaciones del mismo vocabulario:
 
     1. ordenado por frecuencia
-    2. ordenado alfabéticamente
+    2. ordenado alfabÃ©ticamente
 
     El Token no cambia entre ambos archivos.
     """
@@ -265,7 +265,7 @@ def print_summary(
     results,
 ) -> None:
     """
-    Presenta las estadísticas generales del análisis.
+    Presenta las estadÃ­sticas generales del anÃ¡lisis.
     """
 
     total_tokens = sum(
@@ -307,7 +307,7 @@ def print_summary(
     )
 
     print(
-        f"Tokens léxicos              : "
+        f"Tokens lÃ©xicos              : "
         f"{total_tokens:,}"
     )
 
@@ -322,7 +322,7 @@ def print_summary(
     )
 
     print(
-        f"Términos seleccionados      : "
+        f"TÃ©rminos seleccionados      : "
         f"{selected_count:,}"
     )
 
@@ -369,7 +369,7 @@ def analyze_corpus(
     output_directory: Path,
 ) -> None:
     """
-    Ejecuta el análisis completo de un corpus.
+    Ejecuta el anÃ¡lisis completo de un corpus.
     """
 
     print("\n" + "=" * 80)
@@ -407,7 +407,7 @@ def analyze_corpus(
     )
 
     print(
-        f"  Alfabético : "
+        f"  AlfabÃ©tico : "
         f"{alphabetical_path}"
     )
 
@@ -415,13 +415,13 @@ def analyze_corpus(
 def main() -> int:
 
     print(
-        "LexiCorpus v1.4 - Análisis léxico"
+        "LexiCorpus v1.4 - AnÃ¡lisis lÃ©xico"
     )
 
     print("=" * 80)
 
     print(
-        f"Vocabulario máximo : "
+        f"Vocabulario mÃ¡ximo : "
         f"{MAX_LEXICAL_TOKENS:,}"
     )
 
@@ -431,7 +431,7 @@ def main() -> int:
     )
 
     print(
-        f"Tokens léxicos     : "
+        f"Tokens lÃ©xicos     : "
         f"{FIRST_TOKEN} - {LAST_TOKEN}"
     )
 
@@ -466,7 +466,7 @@ def main() -> int:
     )
 
     # -------------------------------------------------------------
-    # Análisis global
+    # AnÃ¡lisis global
     # -------------------------------------------------------------
 
     analyze_corpus(
@@ -478,21 +478,21 @@ def main() -> int:
     )
 
     # -------------------------------------------------------------
-    # Análisis por fuente
+    # AnÃ¡lisis por fuente
     # -------------------------------------------------------------
 
     source_names = {
         "literatura_clasica": (
-            "Literatura clásica"
+            "Literatura clÃ¡sica"
         ),
         "scielo": (
-            "SciELO México"
+            "SciELO MÃ©xico"
         ),
         "redalyc": (
             "RedALyC"
         ),
         "wikipedia_es": (
-            "Wikipedia en español"
+            "Wikipedia en espaÃ±ol"
         ),
     }
 
@@ -509,7 +509,7 @@ def main() -> int:
         )
 
     print("\n" + "=" * 80)
-    print("Análisis finalizado")
+    print("AnÃ¡lisis finalizado")
     print("=" * 80)
 
     print(

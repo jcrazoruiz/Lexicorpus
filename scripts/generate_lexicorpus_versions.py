@@ -26,7 +26,7 @@ from lexicorpus.analysis.lexical_frequency import (
 # CONFIGURACIÓN LEXICORPUS
 # =============================================================================
 
-FIRST_TOKEN = 537
+FIRST_TOKEN = 536
 
 LEXICORPUS_SIZES = (
     20_000,
